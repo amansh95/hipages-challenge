@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-
+const endpointPrefix = "http://localhost/api-v1"
 const LeadsApp = () => {
     const [leadInfo, setLeadInfo] = useState([])
     useEffect(() => {
         fetchLeads()
     }, [])
     const fetchLeads = () => {
-        axios.get('http://localhost/api-v1/leads/invited')
+        axios.get(`${endpointPrefix}/leads/invited`)
             .then((res) => {
                 console.log(res);
                 setLeadInfo(res.data.invited)
@@ -21,7 +21,7 @@ const LeadsApp = () => {
         fetchAccepted()
     }, [])
     const fetchAccepted = () => {
-        axios.get('http://localhost/api-v1/leads/accepted')
+        axios.get(`${endpointPrefix}/leads/accepted`)
             .then((res) => {
                 console.log(res);
                 setAccepted(res.data.accepted)
@@ -31,7 +31,7 @@ const LeadsApp = () => {
     }
 
     async function handleClick(id, status) {
-        await axios.put(`http://localhost/api-v1/leads/accepted?id=${id}`, {
+        await axios.put(`${endpointPrefix}/leads/accepted?id=${id}`, {
             status: status
         })
         window.location.reload(false);
@@ -39,7 +39,7 @@ const LeadsApp = () => {
 
     //this is a test api, disregard it
     async function handlReset() {
-        await axios.delete(`http://localhost/api-v1/leads/all`)
+        await axios.delete(`${endpointPrefix}/leads/all`)
         window.location.reload(false);
     }
 
@@ -101,7 +101,7 @@ const LeadsApp = () => {
                 </div>
             </div>
             <div className="float-child-2">
-            <button className="button-1" onClick={() => handlReset()}>Reset all leads to new</button>
+                <button className="button-1" onClick={() => handlReset()}>Reset all leads to new</button>
             </div>
         </div>
 

@@ -7,13 +7,17 @@ const categoriesTable = "categories"
 
 let dbConnection: mysql.Connection
 export function activateDbConnection(): void {
-    dbConnection = mysql.createConnection({
-        host: 'localhost',
-        user: 'root',
-        password: 'hipages', //obviously  the password wont be plaintext and will be fetched from outside the source code
-        database: 'hipages'
-    })
-    dbConnection.connect()
+    try {
+        dbConnection = mysql.createConnection({
+            host: 'host.docker.internal',
+            user: 'root',
+            password: 'hipages', //obviously  the password wont be plaintext and will be fetched from outside the source code
+            database: 'hipages'
+        })
+        dbConnection.connect()
+    } catch (err) {
+        console.log("Could not connect to the database")
+    }
 }
 
 /**

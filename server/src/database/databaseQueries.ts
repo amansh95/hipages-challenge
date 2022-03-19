@@ -5,16 +5,18 @@ const suburbsTable = "suburbs"
 const categoriesTable = "categories"
 
 
-let dbConnection: mysql.Connection
+let dbPool: mysql.Pool
 export function activateDbConnection(): void {
     try {
-        dbConnection = mysql.createConnection({
+        dbPool = mysql.createPool({
+            connectionLimit: 100,
             host: 'host.docker.internal',
             user: 'root',
             password: 'hipages', //obviously  the password wont be plaintext and will be fetched from outside the source code
-            database: 'hipages'
+            database: 'hipages',
+            debug: false
         })
-        dbConnection.connect()
+
     } catch (err) {
         console.log("Could not connect to the database")
     }
@@ -25,9 +27,9 @@ export function activateDbConnection(): void {
  * @returns 
  */
 export async function getAllInvitedLeads(): Promise<JobDetails[]> {
-    const getInvitedQuery = `select * from jobs where status = ${dbConnection.escape(JobsEnum.new)}`
+    const getInvitedQuery = `select * from jobs where status = ${dbPool.escape(JobsEnum.new)}`
     return new Promise((resolve, reject) => {
-        dbConnection.query(getInvitedQuery, (err, results: JobDetails[]) => {
+        dbPool.query(getInvitedQuery, (err, results: JobDetails[]) => {
             if (err) reject(err)
             getAllInfo(results).then((updatedResults) => {
                 resolve(updatedResults)
@@ -41,9 +43,9 @@ export async function getAllInvitedLeads(): Promise<JobDetails[]> {
  * @returns 
  */
 export async function getAllAcceptedLeads(): Promise<JobDetails[]> {
-    const getInvitedQuery = `select * from ${jobsTable} where status = ${dbConnection.escape(JobsEnum.accepted)}`
+    const getInvitedQuery = `select * from ${jobsTable} where status = ${dbPool.escape(JobsEnum.accepted)}`
     return new Promise((resolve, reject) => {
-        dbConnection.query(getInvitedQuery, (err, results: JobDetails[]) => {
+        dbPool.query(getInvitedQuery, (err, results: JobDetails[]) => {
             if (err) reject(err)
             getAllInfo(results).then((updatedResults) => {
                 resolve(updatedResults)
@@ -57,9 +59,9 @@ export async function getAllAcceptedLeads(): Promise<JobDetails[]> {
  * @returns 
  */
 export async function setLeadStatus(id: number, status: JobStatus): Promise<string> {
-    const setAcceptedQuery = `UPDATE ${jobsTable} SET status =  ${dbConnection.escape(status)} where id = ${dbConnection.escape(id)}`
+    const setAcceptedQuery = `UPDATE ${jobsTable} SET status =  ${dbPool.escape(status)} where id = ${dbPool.escape(id)}`
     return new Promise((resolve, reject) => {
-        dbConnection.query(setAcceptedQuery, (err, results) => {
+        dbPool.query(setAcceptedQuery, (err, results) => {
             if (err) {
                 console.log(err);
                 reject(new Error("Invalid Job ID")) //assuming the only reason this fails is that the job id doesnt exist
@@ -73,8 +75,8 @@ export async function setLeadStatus(id: number, status: JobStatus): Promise<stri
 
 
 export async function getExtraDetails(suburbId: number, categoryId: number): Promise<ExtraInfo> {
-    const getSuburbNameQuery = `select name, postcode from ${suburbsTable} where id = ${dbConnection.escape(suburbId)}`
-    const getCategoryNameQuery = `select name from ${categoriesTable} where id = ${dbConnection.escape(categoryId)}`
+    const getSuburbNameQuery = `select name, postcode from ${suburbsTable} where id = ${dbPool.escape(suburbId)}`
+    const getCategoryNameQuery = `select name from ${categoriesTable} where id = ${dbPool.escape(categoryId)}`
     const details: ExtraInfo = {
         suburbName: "",
         postcode: 0,
@@ -84,11 +86,11 @@ export async function getExtraDetails(suburbId: number, categoryId: number): Pro
     //can be implemented better but this should be fine for now
     //ideally it wont have to cascade like this 
     return new Promise((resolve, reject) => {
-        dbConnection.query(getSuburbNameQuery, (err, results) => {
+        dbPool.query(getSuburbNameQuery, (err, results) => {
             if (err) reject(err)
             details.suburbName = results[0].name
             details.postcode = results[0].postcode
-            dbConnection.query(getCategoryNameQuery, (err2, results2) => {
+            dbPool.query(getCategoryNameQuery, (err2, results2) => {
                 if (err2) reject(err2)
                 details.categoryName = results2[0].name
                 resolve(details)
@@ -98,9 +100,9 @@ export async function getExtraDetails(suburbId: number, categoryId: number): Pro
 }
 
 export async function setAllLeadsToNew(): Promise<void> {
-    const resetQuery = `UPDATE ${jobsTable} SET status =  ${dbConnection.escape("new")} where id > ${dbConnection.escape(0)}`
+    const resetQuery = `UPDATE ${jobsTable} SET status =  ${dbPool.escape("new")} where id > ${dbPool.escape(0)}`
     return new Promise((resolve, reject) => {
-        dbConnection.query(resetQuery, (err, results) => {
+        dbPool.query(resetQuery, (err, results) => {
             if (err) reject(err)
             resolve()
         })

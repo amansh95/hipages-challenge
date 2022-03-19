@@ -1,6 +1,6 @@
 import * as http from "http"
 import * as Koa from "koa"
-import { createAPIRouter } from "./apiRouter"
+import { createAPIRouter } from "./api/apiRouter"
 import { activateDbConnection } from "./database/databaseQueries"
 import { setupMiddleWares } from "./middlewares"
 

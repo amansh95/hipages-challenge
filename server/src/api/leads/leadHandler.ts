@@ -1,6 +1,6 @@
 import * as Koa from "koa"
 import * as Joi from "joi"
-import { getAllAcceptedLeads, getAllInvitedLeads, setLeadStatus, JobsEnum, JobStatus } from "./database/databaseQueries"
+import { getAllAcceptedLeads, getAllInvitedLeads, setLeadStatus, JobsEnum, JobStatus, setAllLeadsToNew } from "../../database/databaseQueries"
 
 /**
  * Shows the list of leads that are marked as invited
@@ -32,10 +32,10 @@ export async function getAcceptedLeads(ctx: Koa.ParameterizedContext): Promise<v
 }
 
 /**
- * Will mark the specified lead as either accepted or declined
+ * Will mark the specified lead as either accepted, declined
  * @param ctx 
  */
-export async function markLeadAccepted(ctx: Koa.ParameterizedContext): Promise<void> {
+export async function changeLeadStatus(ctx: Koa.ParameterizedContext): Promise<void> {
     try {
         //assuming that job ids are unique, this api will only need the job id to mark that job as completed
         const leadAcceptedParams = Joi.object({
@@ -49,6 +49,21 @@ export async function markLeadAccepted(ctx: Koa.ParameterizedContext): Promise<v
         const requestBody: { status: JobStatus } = await leadAcceptedBody.validateAsync(ctx.request.body)
         ctx.body = {
             status: await setLeadStatus(queryParams.id, requestBody.status)
+        }
+    } catch (err) {
+        errorHandler(ctx, err.message)
+    }
+}
+
+/**
+ * This is an api to enable testing since if a lead is marked as disabled, it will go away from the UI
+ * @param ctx 
+ */
+export async function resetAllLeads(ctx: Koa.ParameterizedContext): Promise<void> {
+    try {
+        await setAllLeadsToNew()
+        ctx.body = {
+            status: "All leads reset to new"
         }
     } catch (err) {
         errorHandler(ctx, err.message)

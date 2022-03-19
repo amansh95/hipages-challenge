@@ -82,7 +82,6 @@ export async function getExtraDetails(suburbId: number, categoryId: number): Pro
     return new Promise((resolve, reject) => {
         dbConnection.query(getSuburbNameQuery, (err, results) => {
             if (err) reject(err)
-            console.log("+++++++++++++++++++++++++");
             details.suburbName = results[0].name
             details.postcode = results[0].postcode
             dbConnection.query(getCategoryNameQuery, (err2, results2) => {
@@ -90,6 +89,16 @@ export async function getExtraDetails(suburbId: number, categoryId: number): Pro
                 details.categoryName = results2[0].name
                 resolve(details)
             })
+        })
+    })
+}
+
+export async function setAllLeadsToNew(): Promise<void> {
+    const resetQuery = `UPDATE ${jobsTable} SET status =  ${dbConnection.escape("new")} where id > ${dbConnection.escape(0)}`
+    return new Promise((resolve, reject) => {
+        dbConnection.query(resetQuery, (err, results) => {
+            if (err) reject(err)
+            resolve()
         })
     })
 }

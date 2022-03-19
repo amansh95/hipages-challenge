@@ -1,6 +1,6 @@
 import * as Router from "koa-router"
 import * as Koa from "koa"
-import { leadRouter } from "./leadInfoRouter"
+import { leadRouter } from "./leads/leadInfoRouter"
 
 const apiVersion = "api-v1"
 

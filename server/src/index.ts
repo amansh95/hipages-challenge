@@ -33,6 +33,9 @@ async function createServer(): Promise<void> {
     httpServer.listen(httpPort, () => {
         console.log("HTTP Server started on port " + httpPort);
     })
+    process.on("uncaughtException", function (err) {
+        console.log("UNHANDLED EXCEPTION " + err.message)
+    })
 }
 
 //just calling the start function

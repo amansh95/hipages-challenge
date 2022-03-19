@@ -9,7 +9,6 @@ const LeadsApp = () => {
     const fetchLeads = () => {
         axios.get(`${endpointPrefix}/leads/invited`)
             .then((res) => {
-                console.log(res);
                 setLeadInfo(res.data.invited)
             }).catch((err) => {
                 console.log(err);
@@ -23,7 +22,6 @@ const LeadsApp = () => {
     const fetchAccepted = () => {
         axios.get(`${endpointPrefix}/leads/accepted`)
             .then((res) => {
-                console.log(res);
                 setAccepted(res.data.accepted)
             }).catch((err) => {
                 console.log(err);
@@ -51,7 +49,8 @@ const LeadsApp = () => {
                 <div className='item-container'>
                     {leadInfo.map((lead) => (
                         <div className='card'>
-                            <h3>{lead.contact_name} &emsp; &emsp; &emsp; {lead.contact_email}</h3>
+                            {/* //possibly find a way to convert the timestamp in the backend */}
+                            <h3>{lead.contact_name} &emsp; &emsp; &emsp; {lead.created_at.split("T")[0]}</h3> 
                             <hr size="2" width="100%" color="grey" />
                             <h4><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-geo-alt" viewBox="0 0 16 16">
                                 <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z" />
@@ -80,7 +79,7 @@ const LeadsApp = () => {
                 <div className='item-container'>
                     {acceptedLead.map((lead) => (
                         <div className='card'>
-                            <h3>{lead.contact_name} &emsp; &emsp; &emsp; {lead.contact_email}</h3>
+                            <h3>{lead.contact_name} &emsp; &emsp; &emsp; {lead.updated_at.split("T")[0]}</h3>
                             <hr size="2" width="100%" color="grey" />
                             <h4><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-geo-alt" viewBox="0 0 16 16">
                                 <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z" />
@@ -92,6 +91,14 @@ const LeadsApp = () => {
                                 &emsp; &emsp; Job ID: {lead.id}  &emsp; &emsp; ${lead.price} Lead Invitation
                             </h4>
                             <hr size="2" width="100%" color="grey" />
+                            <h4>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-phone" viewBox="0 0 16 16">
+                                    <path d="M11 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h6zM5 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H5z" />
+                                    <path d="M8 14a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />
+                                </svg>{lead.contact_phone} &emsp; &emsp; <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-envelope" viewBox="0 0 16 16">
+                                    <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z" />
+                                </svg> {lead.contact_email}
+                            </h4>
                             <p>{lead.description}</p>
                             <p>
                                 <button className="button-1" onClick={() => handleClick(lead.id, "declined")}>Decline</button>

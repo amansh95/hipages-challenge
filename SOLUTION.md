@@ -2,7 +2,9 @@ Aman's Solution Documentation
 ===========================
 
 ## Running the app
-- `docker-compose up -d`  will bring up all the required containers and the UI can be accessed on port 3000
+- Running `docker-compose up -d` from repo root will bring up all the required containers and the UI can be accessed on port 3000
+- (NOTE: Even though the containers start almost instantly, the UI build may take a couple of minutes to come online)
+- Check the docker container logs for progress info
 
 
 ## Frameworks used

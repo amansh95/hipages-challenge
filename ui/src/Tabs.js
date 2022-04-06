@@ -14,7 +14,9 @@ const Tabs = ({ children }) => {
     e.preventDefault();
     setActive(tabName);
     localStorage.setItem(tabKey, tabName);
+    window.location.reload(false);
   };
+  
   return (
     <div>
       <ul className="tabs">

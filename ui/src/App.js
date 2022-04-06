@@ -4,7 +4,7 @@ import axios from 'axios'
 import LeadsList from './LeadsList';
 import { endpointPrefix } from "./Lead"
 
-function App() {
+const App = () => {
 
   const [invited, setInvited] = useState([])
   const [accepted, setAccepted] = useState([])

@@ -3,7 +3,7 @@ import axios from 'axios'
 
 export const endpointPrefix = "http://localhost/api-v1"
 
-export default function Lead({ lead, invited }) {
+const Lead = ({ lead, invited }) => {
 
     const handleClick = async (id, status) => {
         await axios.put(`${endpointPrefix}/leads/accepted?id=${id}`, {
@@ -65,3 +65,5 @@ export default function Lead({ lead, invited }) {
         </div>
     )
 }
+
+export default Lead

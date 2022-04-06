@@ -3,7 +3,7 @@ import Lead, { endpointPrefix } from './Lead'
 import axios from 'axios'
 import { uuid } from 'uuidv4';
 
-export default function LeadsList({ invited, accepted }) {
+const LeadsList = ({ invited, accepted }) => {
 
     const handlReset = async () => {
         await axios.delete(`${endpointPrefix}/leads/all`)
@@ -36,3 +36,5 @@ export default function LeadsList({ invited, accepted }) {
         </div>
     );
 }
+
+export default LeadsList
